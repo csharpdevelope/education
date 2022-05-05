@@ -57,7 +57,7 @@ public class FlowerController {
     public ResponseEntity<?> getFlowerImage(@PathVariable(value = "filename") String filename) {
         Images images = flowerService.getFlowerImage(filename);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + images.getFilename() + "\"")
+                .contentType(MediaType.IMAGE_JPEG)
                 .body(images.getData());
     }
 

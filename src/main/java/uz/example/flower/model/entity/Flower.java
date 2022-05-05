@@ -33,6 +33,5 @@ public class Flower extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @NotNull
     private User user;
 }
