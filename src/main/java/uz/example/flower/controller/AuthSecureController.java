@@ -2,13 +2,11 @@ package uz.example.flower.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import uz.example.flower.model.JSend;
-import uz.example.flower.model.dto.db.CheckCode;
 import uz.example.flower.model.dto.db.LoginDto;
 import uz.example.flower.model.dto.db.RegisterDto;
-import uz.example.flower.model.entity.User;
 import uz.example.flower.payload.request.ChangePasswordDto;
 import uz.example.flower.payload.request.UserUpdateDto;
 import uz.example.flower.service.UserService;
@@ -43,8 +41,10 @@ public class AuthSecureController {
     }
     
     @PostMapping("logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        SecurityContextHolder.clearContext();
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(request, response, securityUtils.getAuthentication());
         try {
             request.logout();
         } catch (ServletException e) {

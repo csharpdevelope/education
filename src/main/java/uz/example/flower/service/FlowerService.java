@@ -18,4 +18,6 @@ public interface FlowerService {
     Images getFlowerImageById(Long id);
 
     List<Flower> getFlowersByIds(List<Long> ids);
+
+    FlowerDto editFlowers(FlowerDto flowerDto, List<MultipartFile> files);
 }

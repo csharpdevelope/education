@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import uz.example.flower.model.base.BaseEntity;
+import uz.example.flower.model.dto.FlowerDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
