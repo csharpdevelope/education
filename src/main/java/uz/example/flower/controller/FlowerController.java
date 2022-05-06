@@ -1,7 +1,6 @@
 package uz.example.flower.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,7 @@ import uz.example.flower.service.FlowerService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api")
-@SecurityRequirement(name = "Flower Shop")
+@RequestMapping("api/v1/flowers")
 public class FlowerController {
     private final FlowerService flowerService;
     private final CategoriesService categoriesService;
@@ -29,14 +27,15 @@ public class FlowerController {
         this.categoriesService = categoriesService;
     }
 
-    @GetMapping("get/flowers")
+    @GetMapping("get")
     public ResponseEntity<?> getAllFlowers() {
         List<FlowerResponse> flowers = flowerService.getAll();
         return ResponseEntity.ok(flowers);
     }
 
-    @PostMapping("add/flower")
+    @PostMapping("add")
     @PreAuthorize(value = "hasAnyAuthority('ADMIN')")
+    @SecurityRequirement(name = "FLower Shopping")
     public ResponseEntity<?> postFlower(@RequestParam(value = "name") String name,
                                         @RequestParam(value = "heading") String heading,
                                         @RequestParam(value = "description") String description,
@@ -53,20 +52,9 @@ public class FlowerController {
         return ResponseEntity.ok(flowerDto);
     }
 
-    @GetMapping("download/{filename:.+}")
+    @GetMapping("get/{filename:.+}")
     public ResponseEntity<?> getFlowerImage(@PathVariable(value = "filename") String filename) {
         Images images = flowerService.getFlowerImage(filename);
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(images.getData());
-    }
-
-    @GetMapping(value = "file/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> fileImage(@PathVariable("id") Long id) {
-        Images images = flowerService.getFlowerImageById(id);
-        if (images == null){
-            return new ResponseEntity<>("Image not found", HttpStatus.NOT_FOUND);
-        }
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(images.getData());

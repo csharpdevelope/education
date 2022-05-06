@@ -49,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 .authorizeRequests()
                 .antMatchers(SecurityConstant.ACCESS_URL_TOKEN).permitAll()
+                .antMatchers(SecurityConstant.FLOWER_URL).permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger.json").permitAll()
                 .anyRequest().authenticated()
                 .and()

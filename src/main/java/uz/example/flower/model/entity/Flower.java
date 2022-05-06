@@ -8,6 +8,7 @@ import uz.example.flower.model.dto.FlowerDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,4 +36,22 @@ public class Flower extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    public FlowerDto toFlowerDto() {
+        FlowerDto flower = new FlowerDto();
+        flower.setId(getId());
+        flower.setName(getName());
+        flower.setHeading(getHeading());
+        flower.setDescription(getDescription());
+        flower.setDiscount(getDiscount());
+        flower.setPrice(getPrice());
+        flower.setQuantity(getQuantity());
+        List<String> images = new ArrayList<>();
+        getImages().forEach(img -> {
+            images.add(img.getFilename());
+        });
+
+        flower.setImagesList(images);
+        return flower;
+    }
 }

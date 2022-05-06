@@ -20,8 +20,8 @@ public class SecurityUtils {
         User user = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() != null) {
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-            user = userRepository.findByUsername(customUserDetails.getUsername());
+            String customUserDetails = (String) authentication.getPrincipal();
+            user = userRepository.findByUsername(customUserDetails);
         }
 
         return user;

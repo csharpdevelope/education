@@ -1,5 +1,6 @@
 package uz.example.flower.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -41,6 +42,7 @@ public class AuthSecureController {
     }
     
     @PostMapping("logout")
+    @SecurityRequirement(name = "FLower Shopping")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
@@ -50,7 +52,7 @@ public class AuthSecureController {
         } catch (ServletException e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok("Log out successful");
+        return ResponseEntity.ok(JSend.success());
     }
 
     @PutMapping("update")

@@ -86,7 +86,6 @@ public class FlowerServiceImpl implements FlowerService {
             images = optional.get();
             images.setData(images.getData());
         }
-
         return images;
     }
 

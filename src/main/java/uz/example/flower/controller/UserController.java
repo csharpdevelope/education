@@ -1,7 +1,9 @@
 package uz.example.flower.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import uz.example.flower.model.JSend;
 import uz.example.flower.payload.request.AdminUserDto;
@@ -10,7 +12,9 @@ import uz.example.flower.service.UserService;
 import java.util.List;
 
 @RestController
+@Secured("ADMIN")
 @RequestMapping("api/admin")
+@SecurityRequirement(name = "FLower Shopping")
 public class UserController {
     private final UserService userService;
 
@@ -34,6 +38,12 @@ public class UserController {
 
     @PostMapping("add/user")
     public ResponseEntity<?> addAdmin(@RequestBody AdminUserDto userDto) {
-        return ResponseEntity.ok().build();
+        JSend response;
+        if (userDto.getUsername() == null) {
+            response = JSend.badRequest("Username valid null");
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+        }
+        response = userService.addRoleToUser(userDto.getUsername(), userDto.getRoles());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 }

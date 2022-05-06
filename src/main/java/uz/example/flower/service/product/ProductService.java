@@ -11,4 +11,6 @@ public interface ProductService {
     JSend editProduct(String body, List<MultipartFile> files);
     JSend getAll();
     JSend getById(Long id);
+
+    JSend deleteProduct(Long id);
 }

@@ -7,4 +7,8 @@ public class SecurityConstant {
             "/api/secure/reset_password",
             "/api/secure/code_check"
     };
+
+    public static final String[] FLOWER_URL = {
+            "/api/v1/flowers/**"
+    };
 }
