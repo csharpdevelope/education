@@ -17,9 +17,8 @@ import uz.example.flower.service.FlowerService;
 import uz.example.flower.service.product.ProductService;
 import uz.example.flower.service.tools.SecurityUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImp implements ProductService {
@@ -64,7 +63,7 @@ public class ProductServiceImp implements ProductService {
         flowers.forEach(flower -> {
             responseFlowers.add(flower.toFlowerDto());
         });
-
+        responseFlowers.sort(Comparator.comparing(FlowerDto::getId));
         return JSend.success(responseFlowers);
     }
 
