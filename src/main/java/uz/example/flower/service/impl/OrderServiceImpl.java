@@ -1,42 +1,59 @@
 package uz.example.flower.service.impl;
 
 import org.springframework.stereotype.Service;
+import uz.example.flower.exception.BadRequestException;
 import uz.example.flower.model.JSend;
 import uz.example.flower.model.entity.Flower;
 import uz.example.flower.model.entity.Order;
+import uz.example.flower.model.entity.User;
 import uz.example.flower.payload.request.OrderDto;
 import uz.example.flower.repository.OrderRepository;
 import uz.example.flower.service.FlowerService;
 import uz.example.flower.service.OrderService;
+import uz.example.flower.service.tools.SecurityUtils;
 import uz.example.flower.utils.Messages;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final FlowerService flowerService;
+    private final SecurityUtils securityUtils;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FlowerService flowerService) {
+    public OrderServiceImpl(OrderRepository orderRepository, FlowerService flowerService, SecurityUtils securityUtils) {
         this.orderRepository = orderRepository;
         this.flowerService = flowerService;
+        this.securityUtils = securityUtils;
     }
 
     @Override
     public JSend create(OrderDto orderDto) {
-        List<Flower> flowers = flowerService.getFlowersByIds(orderDto.getFlowerIds());
+        List<Long> productIds = orderDto.getFlowerIds();
+        List<Flower> flowers = flowerService.getFlowersByIds(productIds);
         if (flowers.isEmpty()) {
-            return JSend.badRequest(400, "Flowers not Found");
+            return JSend.badRequest(400, Messages.PRODUCT_NOT_FOUNDS + "(" + productIds + ")");
         }
-        Order order = new Order();
-        order.setAddress(orderDto.getAddress());
-        order.setCity(orderDto.getCity());
-        order.setPhoneNumber(orderDto.getPhoneNumber());
-        order.setNumber(orderDto.getNumber());
-        order.setFullName(orderDto.getFio());
-        order.setRegion(orderDto.getRegion());
+        User user = securityUtils.getCurrentUser();
+        Order order = orderDto.toOrder();
+        order.setUser(user);
         order.setFlowers(flowers);
         orderRepository.save(order);
-        return JSend.success(Messages.ORDER_CREATE);
+        return JSend.success(Messages.ORDER_CREATE, order.getId());
+    }
+
+    @Override
+    public JSend delete(Long id) {
+        if (id == null) {
+            throw new BadRequestException("Id not null");
+        }
+        Optional<Order> order = orderRepository.findById(id);
+
+        if (order.isPresent()) {
+            orderRepository.delete(order.get());
+            return JSend.success(Messages.ORDER_DELETE);
+        }
+        return JSend.notFound(Messages.ORDER_NOT_FOUND + id);
     }
 }

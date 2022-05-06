@@ -13,4 +13,8 @@ public interface ProductService {
     JSend getById(Long id);
 
     JSend deleteProduct(Long id);
+
+    JSend editQuantityProduct(Long id, Long quantity);
+
+    JSend editDiscount(Long id, Long discount);
 }

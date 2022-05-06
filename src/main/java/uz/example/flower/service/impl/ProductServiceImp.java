@@ -16,9 +16,10 @@ import uz.example.flower.repository.UserRepository;
 import uz.example.flower.service.FlowerService;
 import uz.example.flower.service.product.ProductService;
 import uz.example.flower.service.tools.SecurityUtils;
+import uz.example.flower.utils.Messages;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.Flow;
 
 @Service
 public class ProductServiceImp implements ProductService {
@@ -72,12 +73,11 @@ public class ProductServiceImp implements ProductService {
         if (id == null) {
             throw new BadRequestException("Id not null");
         }
-        User user = securityUtils.getCurrentUser();
-        Optional<Flower> optional = flowerRepository.findByIdAndUser(id, user);
+        Optional<Flower> optional = flower(id);
         if (optional.isPresent())
             return JSend.success(optional.get().toFlowerDto());
 
-        return JSend.notFound("There are no products for this id: " + id);
+        return JSend.notFound(Messages.PRODUCT_NOT_FOUND + id);
     }
 
     @Override
@@ -85,13 +85,42 @@ public class ProductServiceImp implements ProductService {
         if (id == null) {
             throw new BadRequestException("Id not null");
         }
-        User user = securityUtils.getCurrentUser();
-        Optional<Flower> optional = flowerRepository.findByIdAndUser(id, user);
+        Optional<Flower> optional = flower(id);
         if (optional.isPresent()) {
             flowerRepository.delete(optional.get());
             return JSend.success();
         }
-        return JSend.notFound("There are no products for this id: " + id);
+        return JSend.notFound(Messages.PRODUCT_NOT_FOUND + id);
+    }
+
+    @Override
+    public JSend editQuantityProduct(Long id, Long quantity) {
+        if (id == null || quantity == null)
+            throw new BadRequestException("Id not null");
+
+        Optional<Flower> optional = flower(id);
+        if (optional.isPresent()) {
+            Flower flower = optional.get();
+            flower.setQuantity(quantity);
+            flowerRepository.save(flower);
+            return JSend.success(Messages.PRODUCT_SUCCESS_CHANGE);
+        }
+        return JSend.success(Messages.PRODUCT_NOT_FOUND + id);
+    }
+
+    @Override
+    public JSend editDiscount(Long id, Long discount) {
+        if (id == null || discount == null)
+            throw new BadRequestException("Id not null");
+
+        Optional<Flower> optional = flower(id);
+        if (optional.isPresent()) {
+            Flower flower = optional.get();
+            flower.setDiscount(discount);
+            flowerRepository.save(flower);
+            return JSend.success(Messages.PRODUCT_ADD_DISCOUNT);
+        }
+        return JSend.success(Messages.PRODUCT_NOT_FOUND + id);
     }
 
     private FlowerDto toFlowerDto(ProductDto productDto) {
@@ -106,5 +135,10 @@ public class ProductServiceImp implements ProductService {
         flowerDto.setPrice(productDto.getPrice());
         flowerDto.setQuantity(productDto.getQuantity());
         return flowerDto;
+    }
+
+    private Optional<Flower> flower(Long id) {
+        User user = securityUtils.getCurrentUser();
+        return flowerRepository.findByIdAndUser(id, user);
     }
 }

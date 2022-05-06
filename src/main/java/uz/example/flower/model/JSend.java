@@ -83,6 +83,9 @@ public final class JSend<T> {
     public static <E> JSend<E> success(E data) {
         return success(Status.SUCCESS, 200, data);
     }
+    public static <E> JSend<E> success(String message, E date){
+        return new JSend<>(null, 200, message, date);
+    }
 
     public static <E> JSend<E> notFound(int code, String message) {
         return new JSend<>(Status.NOTFOUND, code, message);

@@ -5,4 +5,6 @@ import uz.example.flower.payload.request.OrderDto;
 
 public interface OrderService {
     JSend create(OrderDto orderDto);
+
+    JSend delete(Long id);
 }

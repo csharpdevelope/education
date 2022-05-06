@@ -1,5 +1,7 @@
 package uz.example.flower.model.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import uz.example.flower.model.base.BaseEntity;
 
 import javax.persistence.*;
@@ -7,9 +9,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@Getter
+@Setter
 public class Order extends BaseEntity {
     private Long number;
-    private String fullName;
     private String region;
     private String city;
     private String address;
@@ -23,59 +26,7 @@ public class Order extends BaseEntity {
     )
     private List<Flower> flowers;
 
-    public Long getNumber() {
-        return number;
-    }
-
-    public void setNumber(Long number) {
-        this.number = number;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public List<Flower> getFlowers() {
-        return flowers;
-    }
-
-    public void setFlowers(List<Flower> flowers) {
-        this.flowers = flowers;
-    }
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }

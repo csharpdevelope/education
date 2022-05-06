@@ -3,7 +3,6 @@ package uz.example.flower.controller.v1;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,6 +58,20 @@ public class ProductController {
     @DeleteMapping("delete{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long id) {
         JSend response = productService.deleteProduct(id);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+    }
+
+    @PatchMapping("change/quantity")
+    public ResponseEntity<?> changeQuantity(@RequestPart(value = "id") Long id,
+                                            @RequestPart(value = "quantity") Long quantity){
+        JSend response = productService.editQuantityProduct(id, quantity);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+    }
+
+    @PatchMapping("discount")
+    public ResponseEntity<?> discount(@RequestPart(value = "id") Long id,
+                                            @RequestPart(value = "discount") Long discount){
+        JSend response = productService.editDiscount(id, discount);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 }
