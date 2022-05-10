@@ -50,7 +50,7 @@ public class OrderController {
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 
-    @PostMapping("prepare")
+    @PostMapping("way")
     public ResponseEntity<?> wayOrder(@RequestBody @Valid OrderPrepare orderPrepare) {
         JSend response = orderService.way(orderPrepare);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
@@ -61,5 +61,4 @@ public class OrderController {
         JSend response = orderService.delivered(orderPrepare);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
-
 }
