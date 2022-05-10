@@ -3,6 +3,8 @@ package uz.example.flower.model.entity;
 import lombok.Getter;
 import lombok.Setter;
 import uz.example.flower.model.base.BaseEntity;
+import uz.example.flower.model.enums.PaymentStatus;
+import uz.example.flower.model.enums.Status;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,6 +19,10 @@ public class Order extends BaseEntity {
     private String city;
     private String address;
     private String phoneNumber;
+    private Status status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
+    private PaymentStatus paymentStatus;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

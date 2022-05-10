@@ -12,10 +12,6 @@ import uz.example.flower.payload.request.ChangePasswordDto;
 import uz.example.flower.payload.request.UserUpdateDto;
 import uz.example.flower.service.UserService;
 import uz.example.flower.service.tools.SecurityUtils;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -39,20 +35,6 @@ public class AuthSecureController {
     public ResponseEntity<?> register(@RequestBody RegisterDto register) {
         JSend user = userService.saveUser(register);
         return new ResponseEntity<>(user, HttpStatus.valueOf(user.getCode()));
-    }
-    
-    @PostMapping("logout")
-    @SecurityRequirement(name = "FLower Shopping")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-
-        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        logoutHandler.logout(request, response, securityUtils.getAuthentication());
-        try {
-            request.logout();
-        } catch (ServletException e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.ok(JSend.success());
     }
 
     @PutMapping("update")

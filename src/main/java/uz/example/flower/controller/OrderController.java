@@ -7,7 +7,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.example.flower.model.JSend;
 import uz.example.flower.payload.request.OrderDto;
+import uz.example.flower.payload.request.OrderPrepare;
 import uz.example.flower.service.OrderService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/order")
@@ -27,7 +30,8 @@ public class OrderController {
                 orderDto.getRegion() == null ||
                 orderDto.getFlowerIds().isEmpty() ||
                 orderDto.getAddress() == null ||
-                orderDto.getCity() == null ) {
+                orderDto.getCity() == null ||
+                orderDto.getPaymentStatus() == null) {
             return new ResponseEntity<>(JSend.badRequest("The data entered is insufficient"), HttpStatus.BAD_REQUEST);
         }
         JSend response = orderService.create(orderDto);
@@ -37,6 +41,24 @@ public class OrderController {
     @DeleteMapping("delete{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable(value = "id") Long id) {
         JSend response = orderService.delete(id);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+    }
+
+    @PostMapping("prepare")
+    public ResponseEntity<?> prepareOrder(@RequestBody @Valid OrderPrepare orderPrepare) {
+        JSend response = orderService.prepare(orderPrepare);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+    }
+
+    @PostMapping("prepare")
+    public ResponseEntity<?> wayOrder(@RequestBody @Valid OrderPrepare orderPrepare) {
+        JSend response = orderService.way(orderPrepare);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+    }
+
+    @PostMapping("delivered")
+    public ResponseEntity<?> deliveredOrder(@RequestBody @Valid OrderPrepare orderPrepare) {
+        JSend response = orderService.delivered(orderPrepare);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 
