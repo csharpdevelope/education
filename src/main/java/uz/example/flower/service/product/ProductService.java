@@ -1,5 +1,6 @@
 package uz.example.flower.service.product;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.multipart.MultipartFile;
 import uz.example.flower.model.JSend;
 
@@ -17,4 +18,8 @@ public interface ProductService {
     JSend editQuantityProduct(Long id, Long quantity);
 
     JSend editDiscount(Long id, Long discount);
+
+    JsonNode getFlowerByCategories(List<String> categoryName);
+
+    JSend getFlowersByCategory(String categoryName);
 }

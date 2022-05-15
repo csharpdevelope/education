@@ -7,7 +7,6 @@ import uz.example.flower.model.base.BaseEntity;
 import uz.example.flower.model.dto.FlowerDto;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +35,10 @@ public class Flower extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "gift_type_id", referencedColumnName = "id")
+    private GiftType giftType;
 
     public FlowerDto toFlowerDto() {
         FlowerDto flower = new FlowerDto();

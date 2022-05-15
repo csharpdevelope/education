@@ -40,7 +40,7 @@ public class FlowerServiceImpl implements FlowerService {
 
     @Override
     public List<FlowerResponse> getAll() {
-        List<Flower> flowers = flowerRepository.findAll();
+        List<Flower> flowers = flowerRepository.findAllFlower();
         return FlowerMapping.toFlowerResponse(flowers);
     }
 
@@ -120,5 +120,10 @@ public class FlowerServiceImpl implements FlowerService {
         flowerDto.setImagesList(imgList);
 
         return flowerDto;
+    }
+
+    @Override
+    public Flower getById(Long id) {
+        return flowerRepository.getById(id);
     }
 }
