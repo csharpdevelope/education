@@ -44,6 +44,7 @@ public class Flower extends BaseEntity {
         FlowerDto flower = new FlowerDto();
         flower.setId(getId());
         flower.setName(getName());
+        flower.setCreatedDate(getCreatedDate());
         flower.setHeading(getHeading());
         flower.setDescription(getDescription());
         flower.setDiscount(getDiscount());

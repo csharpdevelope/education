@@ -71,12 +71,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JSend signIn(LoginDto login) {
+        User user = userRepository.findByUsername(login.getUsername());
+        if (user == null) {
+            return JSend.notFound(401,"Username or Password invalid");
+        }
 
+        if (!passwordEncoder.matches(login.getPassword(), user.getPassword())){
+            return JSend.notFound(401, "Username or Password invalid");
+        }
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
-
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         if (customUserDetails != null) {
-            User user = customUserDetails.getUser();
+            user = customUserDetails.getUser();
             Timestamp issuerAt = new Timestamp(System.currentTimeMillis());
             String accessToken = jwtTokenProvider.generateToken(user, issuerAt);
             String refreshToken = jwtTokenProvider.generateRefreshToken(user);

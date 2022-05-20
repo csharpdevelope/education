@@ -1,9 +1,7 @@
 package uz.example.flower.controller;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import uz.example.flower.model.JSend;
 import uz.example.flower.model.dto.db.LoginDto;
@@ -16,36 +14,35 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/secure/")
+@CrossOrigin
 public class AuthSecureController {
     private final UserService userService;
-    private final SecurityUtils securityUtils;
 
-    public AuthSecureController(UserService userService, SecurityUtils securityUtils) {
+    public AuthSecureController(UserService userService) {
         this.userService = userService;
-        this.securityUtils = securityUtils;
     }
 
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginDto login) {
         JSend send = userService.signIn(login);
-        return new ResponseEntity<>(send, HttpStatus.valueOf(send.getCode()));
+        return ResponseEntity.ok(send);
     }
 
     @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody RegisterDto register) {
         JSend user = userService.saveUser(register);
-        return new ResponseEntity<>(user, HttpStatus.valueOf(user.getCode()));
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("update")
     public ResponseEntity<?> updateData(@RequestBody @Valid UserUpdateDto userUpdate) {
         JSend response = userService.updateUser(userUpdate);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("reset_password")
     public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordDto passwordDto) {
         JSend response = userService.changePassword(passwordDto);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+        return ResponseEntity.ok(response);
     }
 }

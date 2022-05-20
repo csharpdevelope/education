@@ -26,7 +26,7 @@ public class ProductController {
     @PostMapping("save")
     public ResponseEntity<?> postProduct(@RequestPart(value = "body") String body,
                                          @RequestPart(value = "files") List<MultipartFile> files) {
-        JSend response = null;
+        JSend response;
         if (body == null) {
             response = JSend.badRequest("Data invalid");
             return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));

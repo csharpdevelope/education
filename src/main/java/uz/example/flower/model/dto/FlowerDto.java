@@ -3,11 +3,14 @@ package uz.example.flower.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import uz.example.flower.model.entity.Flower;
 
+import java.util.Date;
 import java.util.List;
 
 public class FlowerDto {
     private Long id;
     private String name;
+    @JsonProperty("created_date")
+    private Date createdDate;
     private String heading;
     private String description;
     private Long discount;
@@ -38,6 +41,14 @@ public class FlowerDto {
 
     public void setImagesList(List<String> imagesList) {
         this.imagesList = imagesList;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public String getName() {
