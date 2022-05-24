@@ -1,5 +1,7 @@
 package uz.example.flower.model.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import uz.example.flower.model.base.BaseEntity;
 import uz.example.flower.model.enums.Gender;
 import uz.example.flower.payload.response.UserDto;
@@ -10,6 +12,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User extends BaseEntity {
 
     @Column(unique = true)
@@ -23,6 +27,7 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Gender gender = Gender.MALE;
+    private String profileImg;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -32,69 +37,6 @@ public class User extends BaseEntity {
     )
     private Set<Role> roles = new HashSet<>();
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Integer getEmailCode() {
-        return emailCode;
-    }
-
-    public void setEmailCode(Integer emailCode) {
-        this.emailCode = emailCode;
-    }
 
     public UserDto toUserDto() {
         UserDto userDto = new UserDto();

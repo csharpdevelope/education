@@ -5,17 +5,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uz.example.flower.model.JSend;
 import uz.example.flower.model.dto.FlowerDto;
 import uz.example.flower.model.dto.FlowerResponse;
-import uz.example.flower.model.entity.Images;
 import uz.example.flower.service.CategoriesService;
 import uz.example.flower.service.FlowerService;
 import uz.example.flower.service.product.ProductService;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -38,7 +38,6 @@ public class FlowerController {
     }
 
     @PostMapping("add")
-    @PreAuthorize(value = "hasAnyAuthority('ADMIN')")
     @SecurityRequirement(name = "FLower Shopping")
     public ResponseEntity<?> postFlower(@RequestParam(value = "name") String name,
                                         @RequestParam(value = "heading") String heading,
@@ -56,12 +55,15 @@ public class FlowerController {
         return ResponseEntity.ok(flowerDto);
     }
 
-    @GetMapping("get/{filename:.+}")
-    public ResponseEntity<?> getFlowerImage(@PathVariable(value = "filename") String filename) {
-        Images images = flowerService.getFlowerImage(filename);
-        return ResponseEntity.ok()
+    @GetMapping("get/{key:.+}")
+    public ResponseEntity<?> getFlowerImage(@PathVariable(value = "key") String objectName) throws IOException {
+        JSend images = flowerService.getFlowerImage(objectName);
+        InputStream inputStream = (InputStream) images.getData();
+        byte[] response = inputStream.readAllBytes();
+        return ResponseEntity
+                .ok()
                 .contentType(MediaType.IMAGE_JPEG)
-                .body(images.getData());
+                .body(response);
     }
 
     @GetMapping("category")

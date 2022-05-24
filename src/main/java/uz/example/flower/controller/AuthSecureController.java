@@ -1,6 +1,5 @@
 package uz.example.flower.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.example.flower.model.JSend;
@@ -9,7 +8,6 @@ import uz.example.flower.model.dto.db.RegisterDto;
 import uz.example.flower.payload.request.ChangePasswordDto;
 import uz.example.flower.payload.request.UserUpdateDto;
 import uz.example.flower.service.UserService;
-import uz.example.flower.service.tools.SecurityUtils;
 import javax.validation.Valid;
 
 @RestController

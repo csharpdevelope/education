@@ -1,6 +1,7 @@
 package uz.example.flower.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import uz.example.flower.model.JSend;
 import uz.example.flower.model.dto.FlowerDto;
 import uz.example.flower.model.dto.FlowerResponse;
 import uz.example.flower.model.entity.Flower;
@@ -13,7 +14,7 @@ public interface FlowerService {
 
     FlowerDto postFlower(FlowerDto flower, List<MultipartFile> files);
 
-    Images getFlowerImage(String filename);
+    JSend getFlowerImage(String objectName);
 
     Images getFlowerImageById(Long id);
 

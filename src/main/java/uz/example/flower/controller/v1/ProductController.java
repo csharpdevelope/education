@@ -38,7 +38,6 @@ public class ProductController {
     @GetMapping("all")
     public ResponseEntity<?> getAllProductsForCustomer() {
         JSend response = productService.getAll();
-
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 
