@@ -103,31 +103,11 @@
             <scope>test</scope>
         </dependency>
 
-<!--&lt;!&ndash;        Telegram bot&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.github.pengrad</groupId>-->
-<!--            <artifactId>java-telegram-bot-api</artifactId>-->
-<!--            <version>5.7.0</version>-->
-<!--        </dependency>-->
-
-<!--        Google api client-->
         <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>1.34.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client-jetty</artifactId>
-            <version>1.33.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-drive</artifactId>
-            <version>v3-rev197-1.25.0</version>
-        </dependency>
-
 
         <dependency>
             <groupId>com.auth0</groupId>

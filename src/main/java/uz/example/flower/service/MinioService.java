@@ -2,12 +2,11 @@ package uz.example.flower.service;
 
 import io.minio.*;
 import io.minio.errors.*;
-import io.minio.messages.Bucket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import uz.example.flower.config.MinioConfigurationProperties;
 import uz.example.flower.model.JSend;
 import uz.example.flower.model.entity.Flower;
 import uz.example.flower.model.entity.Images;
@@ -17,7 +16,6 @@ import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,14 +24,12 @@ public class MinioService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final MinioClient minioClient;
     private final ImagesRepository imagesRepository;
-    @Value("${minio.bucketName}")
-    private String bucketName;
-    @Value("${minio.url}")
-    private String url;
+    private final MinioConfigurationProperties minioConfigurationProperties;
 
-    public MinioService(MinioClient minioClient, ImagesRepository imagesRepository) {
+    public MinioService(MinioClient minioClient, ImagesRepository imagesRepository, MinioConfigurationProperties minioConfigurationProperties) {
         this.minioClient = minioClient;
         this.imagesRepository = imagesRepository;
+        this.minioConfigurationProperties = minioConfigurationProperties;
     }
 
     public JSend uploadFile(MultipartFile multipartFile, Flower flower) {
@@ -50,7 +46,7 @@ public class MinioService {
             minioClient.putObject(
                     PutObjectArgs
                             .builder()
-                            .bucket(bucketName)
+                            .bucket(minioConfigurationProperties.getBucketName())
                             .object(objectName)
                             .stream(inputStream, multipartFile.getSize(), -1)
                             .headers(headers)
@@ -96,7 +92,7 @@ public class MinioService {
     public JSend getFileByObjectName(Images images) {
         try {
             GetObjectResponse response = minioClient.getObject(GetObjectArgs.builder()
-                    .bucket(bucketName)
+                    .bucket(minioConfigurationProperties.getBucketName())
                     .object(images.getFilename())
                     .build());
 
