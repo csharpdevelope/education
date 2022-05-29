@@ -20,14 +20,14 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
 
     Page<Flower> findAllByCategoryIdIn(List<Long> ids, Pageable pageable);
 
-    List<Flower> findAllByUser(User user);
+//    List<Flower> findAllByUser(User user);
 
     Optional<Flower> findByIdAndUser(Long id, User user);
 
     List<Flower> findAllByGiftType(GiftType giftType);
 
-    List<Flower> findAllByUserAndGiftType(User user, GiftType giftType);
+    List<Flower> findAllByUser(User user);
 
-    @Query(value = "select * from flowers_table", nativeQuery = true)
+    @Query(value = "select * from flowers", nativeQuery = true)
     List<Flower> findAllFlower();
 }

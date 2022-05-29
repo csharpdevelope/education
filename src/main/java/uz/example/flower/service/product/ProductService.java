@@ -7,7 +7,7 @@ import uz.example.flower.model.JSend;
 import java.util.List;
 
 public interface ProductService {
-    JSend saveProduct(String body, List<MultipartFile> files);
+    JSend saveProduct(String body, String category, List<String> giftTypes, List<MultipartFile> files);
 
     JSend editProduct(String body, List<MultipartFile> files);
     JSend getAll();

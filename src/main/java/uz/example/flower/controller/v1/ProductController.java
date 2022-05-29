@@ -25,13 +25,15 @@ public class ProductController {
 
     @PostMapping("save")
     public ResponseEntity<?> postProduct(@RequestPart(value = "body") String body,
+                                         @RequestPart(value = "category") String category,
+                                         @RequestPart(value = "gift_types") List<String> giftTypes,
                                          @RequestPart(value = "files") List<MultipartFile> files) {
         JSend response;
-        if (body == null) {
+        if (body == null || category == null || giftTypes.isEmpty()) {
             response = JSend.badRequest("Data invalid");
             return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
         }
-        response = productService.saveProduct(body, files);
+        response = productService.saveProduct(body, category, giftTypes, files);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 

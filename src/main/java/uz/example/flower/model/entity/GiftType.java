@@ -4,6 +4,7 @@ import lombok.Data;
 import uz.example.flower.model.enums.GiftTypeEnum;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,4 +16,7 @@ public class GiftType {
     @Enumerated(EnumType.STRING)
     @Column(name = "name")
     private GiftTypeEnum name;
+
+    @ManyToMany(mappedBy = "giftTypes")
+    private List<Flower> flowers;
 }

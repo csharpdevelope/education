@@ -36,9 +36,13 @@ public class Flower extends BaseEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gift_type_id", referencedColumnName = "id")
-    private GiftType giftType;
+    @ManyToMany
+    @JoinTable(
+            name = "gift_flower_type",
+            joinColumns = @JoinColumn(name = "gift_type_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "flower_id", referencedColumnName = "id")
+    )
+    private List<GiftType> giftTypes = new ArrayList<>();
 
     public FlowerDto toFlowerDto() {
         FlowerDto flower = new FlowerDto();

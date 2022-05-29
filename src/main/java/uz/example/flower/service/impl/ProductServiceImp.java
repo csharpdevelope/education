@@ -45,10 +45,10 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public JSend saveProduct(String body, List<MultipartFile> files) {
+    public JSend saveProduct(String body, String category,  List<String> giftTypes, List<MultipartFile> files) {
         ProductDto productDto = gson.fromJson(body, ProductDto.class);
         FlowerDto flowerDto = toFlowerDto(productDto);
-        flowerService.postFlower(flowerDto, files);
+        flowerService.postFlower(flowerDto, category, giftTypes, files);
         return JSend.success(flowerDto);
     }
 
@@ -174,7 +174,7 @@ public class ProductServiceImp implements ProductService {
         List<Flower> flowers;
         User user = securityUtils.getCurrentUser();
         if (user != null) {
-            flowers = flowerRepository.findAllByUserAndGiftType(user, gift);
+            flowers = flowerRepository.findAllByUser(user);
         } else {
             flowers = flowerRepository.findAllByGiftType(gift);
         }

@@ -29,7 +29,7 @@ public class FlowerMapping {
             List<FlImageResponse> responses = images.stream().map(file -> {
                 String fileDownloadUrl = ServletUriComponentsBuilder
                         .fromCurrentContextPath()
-                        .path("api/download/")
+                        .path("api/v1/flowers/get/")
                         .path(file.getFilename())
                         .toUriString();
                 FlImageResponse responseImage = new FlImageResponse();

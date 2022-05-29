@@ -14,6 +14,8 @@ public interface FlowerService {
 
     FlowerDto postFlower(FlowerDto flower, List<MultipartFile> files);
 
+    FlowerDto postFlower(FlowerDto flower, String category, List<String> giftTypes, List<MultipartFile> files);
+
     JSend getFlowerImage(String objectName);
 
     Images getFlowerImageById(Long id);

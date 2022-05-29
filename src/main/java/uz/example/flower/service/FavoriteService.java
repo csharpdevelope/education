@@ -27,6 +27,7 @@ public class FavoriteService {
         Flower flower = flowerService.getById(flowerId);
         checkout.setActive(true);
         checkout.setUser(user);
+        checkout.setFlower(flower);
         checkOutRepository.save(checkout);
         return JSend.success();
     }
