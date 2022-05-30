@@ -9,6 +9,7 @@ public class SecurityConstant {
     };
 
     public static final String[] FLOWER_URL = {
-            "/api/v1/flowers/**"
+            "/api/v1/flowers/**",
+            "/api/v1/category/**"
     };
 }

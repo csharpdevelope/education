@@ -1,8 +1,5 @@
 package uz.example.flower.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +8,12 @@ import uz.example.flower.exception.BadRequestException;
 import uz.example.flower.exception.NotFoundException;
 import uz.example.flower.model.JSend;
 import uz.example.flower.model.dto.FlowerDto;
+import uz.example.flower.model.dto.GiftTypeDto;
 import uz.example.flower.model.dto.ProductDto;
 import uz.example.flower.model.entity.Flower;
 import uz.example.flower.model.entity.GiftType;
 import uz.example.flower.model.entity.User;
 import uz.example.flower.model.enums.GiftTypeEnum;
-import uz.example.flower.repository.CategoryRepository;
 import uz.example.flower.repository.FlowerRepository;
 import uz.example.flower.repository.GiftTypeRepository;
 import uz.example.flower.service.FlowerService;
@@ -31,16 +28,14 @@ public class ProductServiceImp implements ProductService {
     private final FlowerService flowerService;
     private final FlowerRepository flowerRepository;
     private final SecurityUtils securityUtils;
-    private final ObjectMapper objectMapper;
     private final GiftTypeRepository giftTypeRepository;
     @Autowired
     private Gson gson;
 
-    public ProductServiceImp(FlowerService flowerService, FlowerRepository flowerRepository, SecurityUtils securityUtils, ObjectMapper objectMapper, GiftTypeRepository giftTypeRepository) {
+    public ProductServiceImp(FlowerService flowerService, FlowerRepository flowerRepository, SecurityUtils securityUtils, GiftTypeRepository giftTypeRepository) {
         this.flowerService = flowerService;
         this.flowerRepository = flowerRepository;
         this.securityUtils = securityUtils;
-        this.objectMapper = objectMapper;
         this.giftTypeRepository = giftTypeRepository;
     }
 
@@ -129,13 +124,13 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public JsonNode getFlowerByCategories(List<String> categoryName) {
+    public JSend<List<FlowerDto>> getFlowerByCategories(List<String> categoryName) {
         List<GiftType> listGift = giftTypeRepository.findAllByNameIn(categoryName);
-        ObjectNode response = objectMapper.createObjectNode();
-        for (GiftType gift : listGift) {
-            response.putPOJO("data", getFlowerListByGiftType(gift.getName().name()));
-        }
-        return response;
+        List<Flower> flowers = flowerRepository.findAllByGiftTypesIn(listGift);
+        List<FlowerDto> flowerDtos = new ArrayList<>();
+        flowers.forEach(flower ->
+            flowerDtos.add(flower.toFlowerDto()));
+        return JSend.success(flowerDtos);
     }
 
     @Override
@@ -143,6 +138,23 @@ public class ProductServiceImp implements ProductService {
         return JSend.success(getFlowerListByGiftType(giftName));
     }
 
+    @Override
+    public JSend searchProduct(String text) {
+        return null;
+    }
+
+    @Override
+    public JSend getGiftTypes() {
+        List<GiftTypeDto> list = new ArrayList<>();
+        List<GiftType> types = giftTypeRepository.findAll();
+        types.forEach(type -> {
+            GiftTypeDto dto = new GiftTypeDto();
+            dto.setId(type.getId());
+            dto.setName(type.getName().name());
+            list.add(dto);
+        });
+        return JSend.success(list);
+    }
 
 
     private FlowerDto toFlowerDto(ProductDto productDto) {
@@ -176,7 +188,7 @@ public class ProductServiceImp implements ProductService {
         if (user != null) {
             flowers = flowerRepository.findAllByUser(user);
         } else {
-            flowers = flowerRepository.findAllByGiftType(gift);
+            flowers = flowerRepository.findAllFlower();
         }
         List<FlowerDto> flowerDtos = new ArrayList<>();
 

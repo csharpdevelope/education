@@ -22,6 +22,7 @@ public class FlowerDto {
     private Long quantity;
     @JsonProperty("images_list")
     private List<String> imagesList;
+
     public Flower toFlower() {
         Flower flower = new Flower();
         flower.setQuantity(getQuantity());

@@ -12,7 +12,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/secure/")
-@CrossOrigin
 public class AuthSecureController {
     private final UserService userService;
 

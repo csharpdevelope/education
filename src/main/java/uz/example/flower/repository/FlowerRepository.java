@@ -24,7 +24,7 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
 
     Optional<Flower> findByIdAndUser(Long id, User user);
 
-    List<Flower> findAllByGiftType(GiftType giftType);
+    List<Flower> findAllByGiftTypesIn(List<GiftType> giftTypes);
 
     List<Flower> findAllByUser(User user);
 

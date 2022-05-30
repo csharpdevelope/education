@@ -7,4 +7,8 @@ import java.util.List;
 public interface ProductCategoryService {
 
     JSend getCategory(List<Long> ids, int page, int size);
+
+    JSend getCategory(Long id);
+
+    JSend getCategories();
 }

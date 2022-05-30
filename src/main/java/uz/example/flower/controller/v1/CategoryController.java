@@ -3,10 +3,7 @@ package uz.example.flower.controller.v1;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.example.flower.model.JSend;
 import uz.example.flower.service.ProductCategoryService;
 
@@ -29,5 +26,17 @@ public class CategoryController {
                                            @RequestParam(value = "page_size", required = false) int pageSize) {
         JSend response = productCategoryService.getCategory(ids, page, pageSize);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getCategory() {
+        JSend response = productCategoryService.getCategories();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategory(@PathVariable(value = "id") Long id) {
+        JSend response = productCategoryService.getCategory(id);
+        return ResponseEntity.ok(response);
     }
 }

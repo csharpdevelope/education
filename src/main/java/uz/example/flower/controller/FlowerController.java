@@ -74,8 +74,19 @@ public class FlowerController {
 
     @PostMapping("get/gift")
     public ResponseEntity<?> getFlowerByCategory(@RequestBody List<String> categoryName) {
-        JsonNode listFlowers = productService.getFlowerByCategories(categoryName);
-        JSend response = JSend.success(listFlowers.get("data"));
-        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+        JSend response = productService.getFlowerByCategories(categoryName);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("search")
+    public ResponseEntity<?> getSearch(@RequestParam(value = "text") String text) {
+        JSend response = productService.searchProduct(text);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("gifts")
+    public ResponseEntity<?> getGiftTypes() {
+        JSend response = productService.getGiftTypes();
+        return ResponseEntity.ok(response);
     }
 }
