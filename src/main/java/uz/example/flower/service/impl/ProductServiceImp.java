@@ -1,7 +1,12 @@
 package uz.example.flower.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,10 +39,11 @@ public class ProductServiceImp implements ProductService {
     private final MinioService minioService;
     private final ImagesRepository imagesRepository;
     private final CategoryRepository categoryRepository;
+    private final ObjectMapper objectMapper;
     @Autowired
     private Gson gson;
 
-    public ProductServiceImp(FlowerService flowerService, FlowerRepository flowerRepository, SecurityUtils securityUtils, GiftTypeRepository giftTypeRepository, MinioService minioService, ImagesRepository imagesRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImp(FlowerService flowerService, FlowerRepository flowerRepository, SecurityUtils securityUtils, GiftTypeRepository giftTypeRepository, MinioService minioService, ImagesRepository imagesRepository, CategoryRepository categoryRepository, ObjectMapper objectMapper) {
         this.flowerService = flowerService;
         this.flowerRepository = flowerRepository;
         this.securityUtils = securityUtils;
@@ -45,6 +51,7 @@ public class ProductServiceImp implements ProductService {
         this.minioService = minioService;
         this.imagesRepository = imagesRepository;
         this.categoryRepository = categoryRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -104,6 +111,23 @@ public class ProductServiceImp implements ProductService {
         });
         responseFlowers.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
         return JSend.success(responseFlowers);
+    }
+
+    @Override
+    public JSend getAllWithPage(int page, int pageSize) {
+        ObjectNode response = objectMapper.createObjectNode();
+        Pageable pageable = PageRequest.of(page, pageSize);
+        User user = securityUtils.getCurrentUser();
+        Page<Flower> pageList = flowerRepository.findAllByUser(user, pageable);
+        List<Flower> list = pageList.getContent();
+        List<FlowerDto> responseFlowers = new ArrayList<>();
+        list.forEach(flower -> responseFlowers.add(flower.toFlowerDto()));
+        response.putPOJO("list", responseFlowers);
+        response.put("page", page);
+        response.put("page_size", pageSize);
+        response.put("total_pages", pageList.getTotalPages());
+        response.put("total_elements", pageList.getTotalElements());
+        return JSend.success(response);
     }
 
     @Override

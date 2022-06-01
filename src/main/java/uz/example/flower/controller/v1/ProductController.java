@@ -42,8 +42,8 @@ public class ProductController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<?> getAllProductsForCustomer() {
-        JSend response = productService.getAll();
+    public ResponseEntity<?> getAllProductsForCustomer(@RequestParam(value = "page") int page, @RequestParam(value = "page_size") int pageSize) {
+        JSend response = productService.getAllWithPage(page, pageSize);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 

@@ -33,4 +33,6 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
             "p.name LIKE CONCAT('%',:query, '%')" +
             "Or p.description LIKE CONCAT('%', :query, '%')")
     List<Flower> searchAllByProducts(String query);
+
+    Page<Flower> findAllByUser(User user, Pageable pageable);
 }
