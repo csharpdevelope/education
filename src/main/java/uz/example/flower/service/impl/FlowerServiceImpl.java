@@ -180,7 +180,7 @@ public class FlowerServiceImpl implements FlowerService {
     private List<GiftType> getGiftTypeList(List<String> giftTypes) {
         List<GiftType> giftTypeList = new ArrayList<>();
         for (String gift: giftTypes) {
-            GiftType giftType = giftTypeRepository.findByName(GiftTypeEnum.valueOf(gift))
+            GiftType giftType = giftTypeRepository.findByName(gift)
                     .orElseThrow(() -> new NotFoundException("Not found navbar"));
             giftTypeList.add(giftType);
         }

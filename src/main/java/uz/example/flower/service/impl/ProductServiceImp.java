@@ -3,20 +3,22 @@ package uz.example.flower.service.impl;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import uz.example.flower.exception.BadRequestException;
 import uz.example.flower.exception.NotFoundException;
 import uz.example.flower.model.JSend;
+import uz.example.flower.model.dto.Attachment;
 import uz.example.flower.model.dto.FlowerDto;
 import uz.example.flower.model.dto.GiftTypeDto;
 import uz.example.flower.model.dto.ProductDto;
-import uz.example.flower.model.entity.Flower;
-import uz.example.flower.model.entity.GiftType;
-import uz.example.flower.model.entity.User;
-import uz.example.flower.model.enums.GiftTypeEnum;
+import uz.example.flower.model.entity.*;
+import uz.example.flower.repository.CategoryRepository;
 import uz.example.flower.repository.FlowerRepository;
 import uz.example.flower.repository.GiftTypeRepository;
+import uz.example.flower.repository.ImagesRepository;
 import uz.example.flower.service.FlowerService;
+import uz.example.flower.service.MinioService;
 import uz.example.flower.service.product.ProductService;
 import uz.example.flower.service.tools.SecurityUtils;
 import uz.example.flower.utils.Messages;
@@ -29,14 +31,20 @@ public class ProductServiceImp implements ProductService {
     private final FlowerRepository flowerRepository;
     private final SecurityUtils securityUtils;
     private final GiftTypeRepository giftTypeRepository;
+    private final MinioService minioService;
+    private final ImagesRepository imagesRepository;
+    private final CategoryRepository categoryRepository;
     @Autowired
     private Gson gson;
 
-    public ProductServiceImp(FlowerService flowerService, FlowerRepository flowerRepository, SecurityUtils securityUtils, GiftTypeRepository giftTypeRepository) {
+    public ProductServiceImp(FlowerService flowerService, FlowerRepository flowerRepository, SecurityUtils securityUtils, GiftTypeRepository giftTypeRepository, MinioService minioService, ImagesRepository imagesRepository, CategoryRepository categoryRepository) {
         this.flowerService = flowerService;
         this.flowerRepository = flowerRepository;
         this.securityUtils = securityUtils;
         this.giftTypeRepository = giftTypeRepository;
+        this.minioService = minioService;
+        this.imagesRepository = imagesRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -45,6 +53,36 @@ public class ProductServiceImp implements ProductService {
         FlowerDto flowerDto = toFlowerDto(productDto);
         flowerService.postFlower(flowerDto, category, giftTypes, files);
         return JSend.success(flowerDto);
+    }
+
+    @Override
+    @Transactional
+    public JSend saveProduct(ProductDto productDto) {
+        List<GiftType> giftTypes = new ArrayList<>();
+        productDto.getGiftTypes().forEach(gift -> {
+            GiftType giftType = giftByName(gift);
+            giftTypes.add(giftType);
+        });
+        Category category = categoryRepository.findByName(productDto.getCategory())
+                .orElseThrow(() -> new NotFoundException("Category not found: " + productDto.getCategory()));
+        Flower flower = new Flower();
+        flower.setName(productDto.getName());
+        flower.setHeading(productDto.getHeading());
+        flower.setDescription(productDto.getDescription());
+        flower.setQuantity(0L);
+        flower.setPrice(productDto.getPrice());
+        flower.setQuantity(productDto.getQuantity());
+        flower.setCategory(category);
+        flower.setUser(securityUtils.getCurrentUser());
+        flower.setGiftTypes(giftTypes);
+        flowerRepository.save(flower);
+        for(Long id: productDto.getImageIds()){
+            Images image = imagesRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Image not found: " + id));
+            image.setFlower(flower);
+            imagesRepository.save(image);
+        }
+        return JSend.success();
     }
 
     @Override
@@ -64,7 +102,7 @@ public class ProductServiceImp implements ProductService {
         flowers.forEach(flower -> {
             responseFlowers.add(flower.toFlowerDto());
         });
-        responseFlowers.sort(Comparator.comparing(FlowerDto::getId));
+        responseFlowers.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
         return JSend.success(responseFlowers);
     }
 
@@ -140,7 +178,12 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public JSend searchProduct(String text) {
-        return null;
+        List<Flower> flowers = flowerRepository.searchAllByProducts(text);
+        List<FlowerDto> flowerDtos = new ArrayList<>();
+        flowers.forEach(flower -> {
+            flowerDtos.add(flower.toFlowerDto());
+        });
+        return JSend.success(flowerDtos);
     }
 
     @Override
@@ -150,10 +193,15 @@ public class ProductServiceImp implements ProductService {
         types.forEach(type -> {
             GiftTypeDto dto = new GiftTypeDto();
             dto.setId(type.getId());
-            dto.setName(type.getName().name());
+            dto.setName(type.getName());
             list.add(dto);
         });
         return JSend.success(list);
+    }
+
+    @Override
+    public Attachment uploadImage(MultipartFile file) {
+        return minioService.uploadFile(file);
     }
 
 
@@ -177,7 +225,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     private GiftType giftByName(String name) {
-        return giftTypeRepository.findByName(GiftTypeEnum.valueOf(name))
+        return giftTypeRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Gift Type not found this name: " + name));
     }
 

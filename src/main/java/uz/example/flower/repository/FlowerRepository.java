@@ -20,8 +20,6 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
 
     Page<Flower> findAllByCategoryIdIn(List<Long> ids, Pageable pageable);
 
-//    List<Flower> findAllByUser(User user);
-
     Optional<Flower> findByIdAndUser(Long id, User user);
 
     List<Flower> findAllByGiftTypesIn(List<GiftType> giftTypes);
@@ -30,4 +28,9 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
 
     @Query(value = "select * from flowers", nativeQuery = true)
     List<Flower> findAllFlower();
+
+    @Query("SELECT p FROM Flower p WHERE " +
+            "p.name LIKE CONCAT('%',:query, '%')" +
+            "Or p.description LIKE CONCAT('%', :query, '%')")
+    List<Flower> searchAllByProducts(String query);
 }

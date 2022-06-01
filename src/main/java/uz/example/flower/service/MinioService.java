@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uz.example.flower.config.MinioConfigurationProperties;
 import uz.example.flower.model.JSend;
+import uz.example.flower.model.dto.Attachment;
 import uz.example.flower.model.entity.Flower;
 import uz.example.flower.model.entity.Images;
 import uz.example.flower.repository.ImagesRepository;
@@ -69,6 +70,43 @@ public class MinioService {
             logger.error("Exceptions error: ", e);
         }
         return JSend.fail(500, "Internal Server Error");
+    }
+
+    public Attachment uploadFile(MultipartFile file) {
+        try {
+            InputStream inputStream = new ByteArrayInputStream(file.getBytes());
+            String objectName = generateMinioObjectName(file.getOriginalFilename());
+            String contentType = file.getContentType();
+            Map<String, String> headers = new HashMap<>();
+            headers.put("X-Amz-Storage-Class", "REDUCED_REDUNDANCY");
+            Map<String, String> userMetadata = new HashMap<>();
+            userMetadata.put("Project", "FlowerShopping");
+            ObjectWriteResponse response = minioClient.putObject(PutObjectArgs
+                                                .builder()
+                                                .bucket(minioConfigurationProperties.getBucketName())
+                                                .object(objectName)
+                                                .stream(inputStream, file.getSize(), 0)
+                                                .headers(headers)
+                                                .contentType(contentType)
+                                                .build());
+            Images images = new Images();
+            images.setActive(true);
+            images.setImgUrl(minioConfigurationProperties.getUrl() + '/' + minioConfigurationProperties.getBucketName() +'/' + objectName);
+            images.setSize(file.getSize());
+            images.setImgType(contentType);
+            images.setFilename(objectName);
+            imagesRepository.save(images);
+            Attachment attachment = new Attachment();
+            attachment.setId(images.getId());
+            attachment.setName(objectName);
+            attachment.setUrl(images.getImgUrl());
+            return attachment;
+        } catch (MinioException e) {
+            logger.error("Minio Exception: ", e);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+            logger.error("Exceptions error: ", e);
+        }
+        return null;
     }
 
     public JSend getAllBucket() {

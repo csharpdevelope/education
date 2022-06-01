@@ -1,15 +1,11 @@
 package uz.example.flower.model.dto;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@Data
 @Getter
 @Setter
-@RequiredArgsConstructor
-public class FlImageResponse {
+public class Attachment {
     private Long id;
     private String name;
     private String url;

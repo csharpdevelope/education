@@ -36,7 +36,7 @@ public class Flower extends BaseEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "gift_flower_type",
             joinColumns = @JoinColumn(name = "gift_type_id", referencedColumnName = "id"),
@@ -56,9 +56,8 @@ public class Flower extends BaseEntity {
         flower.setQuantity(getQuantity());
         List<String> images = new ArrayList<>();
         getImages().forEach(img -> {
-            images.add(img.getFilename());
+            images.add(img.getImgUrl());
         });
-
         flower.setImagesList(images);
         return flower;
     }

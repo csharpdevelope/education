@@ -13,9 +13,8 @@ public class GiftType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "name")
-    private GiftTypeEnum name;
+    private String name;
 
     @ManyToMany(mappedBy = "giftTypes")
     private List<Flower> flowers;

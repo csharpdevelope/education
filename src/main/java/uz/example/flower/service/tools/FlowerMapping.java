@@ -1,6 +1,5 @@
 package uz.example.flower.service.tools;
 
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uz.example.flower.model.dto.FlImageResponse;
 import uz.example.flower.model.dto.FlowerResponse;
 import uz.example.flower.model.entity.Flower;
@@ -27,17 +26,10 @@ public class FlowerMapping {
             dto.setId(flower.getId());
             dto.setDiscount(flower.getDiscount());
             List<FlImageResponse> responses = images.stream().map(file -> {
-                String fileDownloadUrl = ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("api/v1/flowers/get/")
-                        .path(file.getFilename())
-                        .toUriString();
                 FlImageResponse responseImage = new FlImageResponse();
                 responseImage.setId(file.getId());
                 responseImage.setName(file.getFilename());
-                responseImage.setType(file.getImgType());
-                responseImage.setSize(file.getSize());
-                responseImage.setUrl(fileDownloadUrl);
+                responseImage.setUrl(file.getImgUrl());
                 return responseImage;
             }).collect(Collectors.toList());
             dto.setImageList(responses);

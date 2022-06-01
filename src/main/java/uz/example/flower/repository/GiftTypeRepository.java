@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface GiftTypeRepository extends JpaRepository<GiftType, Long> {
 
-    Optional<GiftType> findByName(GiftTypeEnum name);
+    Optional<GiftType> findByName(String name);
 
     List<GiftType> findAllByNameIn(List<String> names);
 }

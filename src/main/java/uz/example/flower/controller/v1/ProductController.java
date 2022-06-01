@@ -1,20 +1,19 @@
 package uz.example.flower.controller.v1;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uz.example.flower.model.JSend;
+import uz.example.flower.model.dto.Attachment;
+import uz.example.flower.model.dto.ProductDto;
 import uz.example.flower.service.product.ProductService;
 
 import java.util.List;
 
 @RestController
-@PreAuthorize(value = "hasAuthority('USER')")
 @RequestMapping("api/v1/product")
-@SecurityRequirement(name = "FLower Shopping")
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class ProductController {
 
     private final ProductService productService;
@@ -23,18 +22,23 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("save")
-    public ResponseEntity<?> postProduct(@RequestPart(value = "body") String body,
-                                         @RequestPart(value = "category") String category,
-                                         @RequestPart(value = "gift_types") List<String> giftTypes,
-                                         @RequestPart(value = "files") List<MultipartFile> files) {
+    @PostMapping(value = "save")
+    public ResponseEntity<?> postProduct(@RequestBody ProductDto productDto) {
         JSend response;
-        if (body == null || category == null || giftTypes.isEmpty()) {
-            response = JSend.badRequest("Data invalid");
-            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+        if (productDto.getImageIds().isEmpty()) {
+            return ResponseEntity.ok(JSend.fail("Images id not null"));
         }
-        response = productService.saveProduct(body, category, giftTypes, files);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+        if (productDto.getGiftTypes().isEmpty()) {
+            return ResponseEntity.ok(JSend.fail("Gift Types not null"));
+        }
+        response = productService.saveProduct(productDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("upload/image")
+    public ResponseEntity<?> uploadImage(@RequestPart(value = "file") MultipartFile file) {
+        Attachment attachment = productService.uploadImage(file);
+        return ResponseEntity.ok(attachment);
     }
 
     @GetMapping("all")

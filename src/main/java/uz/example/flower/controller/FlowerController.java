@@ -79,7 +79,7 @@ public class FlowerController {
     }
 
     @GetMapping("search")
-    public ResponseEntity<?> getSearch(@RequestParam(value = "text") String text) {
+    public ResponseEntity<?> getSearch(@RequestParam(value = "search") String text) {
         JSend response = productService.searchProduct(text);
         return ResponseEntity.ok(response);
     }
