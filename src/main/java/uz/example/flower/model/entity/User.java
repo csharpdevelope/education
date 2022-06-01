@@ -45,6 +45,7 @@ public class User extends BaseEntity {
         userDto.setFirstname(getFirstname());
         userDto.setLastname(getLastname());
         userDto.setEmail(getEmail());
+        userDto.setUrl(getProfileImg());
         return userDto;
     }
 }

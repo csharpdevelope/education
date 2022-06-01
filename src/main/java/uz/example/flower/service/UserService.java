@@ -26,4 +26,6 @@ public interface UserService {
     JSend updateUser(UserUpdateDto userUpdate);
 
     JSend changePassword(ChangePasswordDto passwordDto);
+
+    UserDto getUser(User currentUser);
 }

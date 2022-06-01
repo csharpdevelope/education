@@ -162,4 +162,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
         return JSend.success("Password changed successfully");
     }
+
+    @Override
+    public UserDto getUser(User currentUser) {
+        return currentUser.toUserDto();
+    }
 }
