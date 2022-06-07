@@ -16,7 +16,6 @@ import uz.example.flower.model.dto.db.RegisterDto;
 import uz.example.flower.model.entity.Role;
 import uz.example.flower.model.entity.User;
 import uz.example.flower.model.enums.RoleEnum;
-import uz.example.flower.payload.request.AdminUserDto;
 import uz.example.flower.payload.request.ChangePasswordDto;
 import uz.example.flower.payload.request.UserUpdateDto;
 import uz.example.flower.payload.response.SignInDto;
@@ -24,7 +23,7 @@ import uz.example.flower.payload.response.UserDto;
 import uz.example.flower.repository.RoleRepository;
 import uz.example.flower.repository.UserRepository;
 import uz.example.flower.service.UserService;
-import uz.example.flower.service.tools.SecurityUtils;
+import uz.example.flower.component.SecurityUtils;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

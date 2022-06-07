@@ -1,5 +1,6 @@
 package uz.example.flower.service.product;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.multipart.MultipartFile;
 import uz.example.flower.model.JSend;
 import uz.example.flower.model.dto.Attachment;
@@ -35,4 +36,10 @@ public interface ProductService {
     JSend getGiftTypes();
 
     Attachment uploadImage(MultipartFile file);
+
+    JSend getProductWithGift(String name);
+
+    JsonNode getProductWithGift(String name, Integer page, Integer size);
+
+    JSend deleteImage(Long id);
 }

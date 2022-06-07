@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.example.flower.model.JSend;
 import uz.example.flower.payload.request.CheckOutDto;
 import uz.example.flower.service.CheckOutService;
-import uz.example.flower.service.tools.SecurityUtils;
+import uz.example.flower.component.SecurityUtils;
 
 @RestController
 @RequestMapping("api/v1/checkout")

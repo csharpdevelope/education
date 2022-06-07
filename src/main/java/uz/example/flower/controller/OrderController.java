@@ -13,7 +13,7 @@ import uz.example.flower.service.OrderService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("api/order")
+@RequestMapping("/api/v1/order")
 @SecurityRequirement(name = "FLower Shopping")
 @PreAuthorize(value = "hasAuthority('USER')")
 public class OrderController {

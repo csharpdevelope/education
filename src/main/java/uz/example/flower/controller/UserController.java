@@ -1,6 +1,6 @@
 package uz.example.flower.controller;
 
-import org.springframework.http.HttpStatus;
+import  org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +8,7 @@ import uz.example.flower.model.JSend;
 import uz.example.flower.payload.request.AdminUserDto;
 import uz.example.flower.payload.response.UserDto;
 import uz.example.flower.service.UserService;
-import uz.example.flower.service.tools.SecurityUtils;
+import uz.example.flower.component.SecurityUtils;
 
 import java.util.List;
 

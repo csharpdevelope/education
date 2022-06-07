@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/product")
-@CrossOrigin(origins = {"http://localhost:3000"})
 public class ProductController {
 
     private final ProductService productService;
@@ -78,5 +77,11 @@ public class ProductController {
                                             @RequestPart(value = "discount") Long discount){
         JSend response = productService.editDiscount(id, discount);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+    }
+
+    @DeleteMapping("delete/image")
+    public ResponseEntity<?> deleteImage(@PathVariable(value = "id") Long id) {
+        JSend response = productService.deleteImage(id);
+        return ResponseEntity.ok(response);
     }
 }

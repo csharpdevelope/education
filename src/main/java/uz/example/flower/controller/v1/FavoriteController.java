@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.example.flower.model.JSend;
 import uz.example.flower.service.FavoriteService;
-import uz.example.flower.service.tools.SecurityUtils;
+import uz.example.flower.component.SecurityUtils;
 
 @RestController
 @RequestMapping("api/v1/favorite")

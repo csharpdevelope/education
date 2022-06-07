@@ -2,7 +2,6 @@ package uz.example.flower.service.impl;
 
 import org.springframework.stereotype.Service;
 import uz.example.flower.exception.BadRequestException;
-import uz.example.flower.exception.NotFoundException;
 import uz.example.flower.model.JSend;
 import uz.example.flower.model.entity.Flower;
 import uz.example.flower.model.entity.Order;
@@ -13,7 +12,7 @@ import uz.example.flower.payload.request.OrderPrepare;
 import uz.example.flower.repository.OrderRepository;
 import uz.example.flower.service.FlowerService;
 import uz.example.flower.service.OrderService;
-import uz.example.flower.service.tools.SecurityUtils;
+import uz.example.flower.component.SecurityUtils;
 import uz.example.flower.utils.Messages;
 
 import java.util.List;

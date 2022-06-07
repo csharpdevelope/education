@@ -24,6 +24,8 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
 
     List<Flower> findAllByGiftTypesIn(List<GiftType> giftTypes);
 
+    List<Flower> findAllByGiftTypes(GiftType giftType);
+
     List<Flower> findAllByUser(User user);
 
     @Query(value = "select * from flowers", nativeQuery = true)

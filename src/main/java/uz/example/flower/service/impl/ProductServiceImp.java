@@ -1,5 +1,6 @@
 package uz.example.flower.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
@@ -25,7 +26,7 @@ import uz.example.flower.repository.ImagesRepository;
 import uz.example.flower.service.FlowerService;
 import uz.example.flower.service.MinioService;
 import uz.example.flower.service.product.ProductService;
-import uz.example.flower.service.tools.SecurityUtils;
+import uz.example.flower.component.SecurityUtils;
 import uz.example.flower.utils.Messages;
 
 import java.util.*;
@@ -40,10 +41,11 @@ public class ProductServiceImp implements ProductService {
     private final ImagesRepository imagesRepository;
     private final CategoryRepository categoryRepository;
     private final ObjectMapper objectMapper;
+    private final FlowerServiceImpl flowerServiceImp;
     @Autowired
     private Gson gson;
 
-    public ProductServiceImp(FlowerService flowerService, FlowerRepository flowerRepository, SecurityUtils securityUtils, GiftTypeRepository giftTypeRepository, MinioService minioService, ImagesRepository imagesRepository, CategoryRepository categoryRepository, ObjectMapper objectMapper) {
+    public ProductServiceImp(FlowerService flowerService, FlowerRepository flowerRepository, SecurityUtils securityUtils, GiftTypeRepository giftTypeRepository, MinioService minioService, ImagesRepository imagesRepository, CategoryRepository categoryRepository, ObjectMapper objectMapper, FlowerServiceImpl flowerServiceImp) {
         this.flowerService = flowerService;
         this.flowerRepository = flowerRepository;
         this.securityUtils = securityUtils;
@@ -52,6 +54,7 @@ public class ProductServiceImp implements ProductService {
         this.imagesRepository = imagesRepository;
         this.categoryRepository = categoryRepository;
         this.objectMapper = objectMapper;
+        this.flowerServiceImp = flowerServiceImp;
     }
 
     @Override
@@ -226,6 +229,39 @@ public class ProductServiceImp implements ProductService {
     @Override
     public Attachment uploadImage(MultipartFile file) {
         return minioService.uploadFile(file);
+    }
+
+    @Override
+    public JSend getProductWithGift(String name) {
+        Optional<GiftType> type = giftTypeRepository.findByName(name);
+        List<Flower> flower;
+        List<FlowerDto> list = new ArrayList<>();
+        if (type.isPresent()) {
+            flower = flowerRepository.findAllByGiftTypes(type.get());
+            flower.forEach(product ->
+                list.add(product.toFlowerDto())
+            );
+        }
+        return JSend.success(list);
+    }
+
+    @Override
+    public JsonNode getProductWithGift(String name, Integer page, Integer size) {
+        int pageP = 0, pageSize = 10;
+        if (page != null) {
+            pageP = page;
+        }
+        if (size != null)
+            pageSize = size;
+
+        Pageable pageable = PageRequest.of(pageP, pageSize);
+        return flowerServiceImp.getFlowerByPageable(pageable);
+    }
+
+    @Override
+    public JSend deleteImage(Long id) {
+        imagesRepository.deleteById(id);
+        return JSend.success();
     }
 
 

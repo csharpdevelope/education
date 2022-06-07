@@ -1,5 +1,6 @@
 package uz.example.flower.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.multipart.MultipartFile;
 import uz.example.flower.model.JSend;
 import uz.example.flower.model.dto.FlowerDto;
@@ -25,4 +26,7 @@ public interface FlowerService {
     FlowerDto editFlowers(FlowerDto flowerDto, List<MultipartFile> files);
 
     Flower getById(Long id);
+
+    JsonNode getAllWithPage(int page, int size);
+    JsonNode getAllWithPage(int page, int size, String name, Boolean isDesc);
 }

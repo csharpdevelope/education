@@ -1,7 +1,14 @@
 package uz.example.flower.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uz.example.flower.exception.BadRequestException;
@@ -10,7 +17,6 @@ import uz.example.flower.model.JSend;
 import uz.example.flower.model.dto.FlowerDto;
 import uz.example.flower.model.dto.FlowerResponse;
 import uz.example.flower.model.entity.*;
-import uz.example.flower.model.enums.GiftTypeEnum;
 import uz.example.flower.repository.CategoryRepository;
 import uz.example.flower.repository.FlowerRepository;
 import uz.example.flower.repository.GiftTypeRepository;
@@ -18,7 +24,7 @@ import uz.example.flower.repository.ImagesRepository;
 import uz.example.flower.service.FlowerService;
 import uz.example.flower.service.MinioService;
 import uz.example.flower.service.tools.FlowerMapping;
-import uz.example.flower.service.tools.SecurityUtils;
+import uz.example.flower.component.SecurityUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +39,16 @@ public class FlowerServiceImpl implements FlowerService {
     private final ImagesRepository imagesRepository;
     private final CategoryRepository categoryRepository;
     private final GiftTypeRepository giftTypeRepository;
+    private final ObjectMapper objectMapper;
 
-    public FlowerServiceImpl(FlowerRepository flowerRepository, MinioService minioService, SecurityUtils securityUtils, ImagesRepository imagesRepository, CategoryRepository categoryRepository, GiftTypeRepository giftTypeRepository) {
+    public FlowerServiceImpl(FlowerRepository flowerRepository, MinioService minioService, SecurityUtils securityUtils, ImagesRepository imagesRepository, CategoryRepository categoryRepository, GiftTypeRepository giftTypeRepository, ObjectMapper objectMapper) {
         this.flowerRepository = flowerRepository;
         this.minioService = minioService;
         this.securityUtils = securityUtils;
         this.imagesRepository = imagesRepository;
         this.categoryRepository = categoryRepository;
         this.giftTypeRepository = giftTypeRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -164,6 +172,36 @@ public class FlowerServiceImpl implements FlowerService {
     @Override
     public Flower getById(Long id) {
         return flowerRepository.getById(id);
+    }
+
+    @Override
+    public JsonNode getAllWithPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return getFlowerByPageable(pageable);
+    }
+
+    @Override
+    public JsonNode getAllWithPage(int page, int size, String name, Boolean isDesc) {
+        Pageable pageable;
+        if (isDesc) {
+            pageable = PageRequest.of(page, size, Sort.by(name).descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(name));
+        }
+        return getFlowerByPageable(pageable);
+    }
+
+    public JsonNode getFlowerByPageable(Pageable pageable) {
+        ObjectNode response = objectMapper.createObjectNode();
+        Page<Flower> flowers = flowerRepository.findAll(pageable);
+        List<FlowerDto> flowerDtos = new ArrayList<>();
+        flowers.getContent().forEach(flower -> flowerDtos.add(flower.toFlowerDto()));
+        response.putPOJO("list", flowerDtos);
+        response.put("page", flowers.getNumber());
+        response.put("page_size", flowers.getSize());
+        response.put("total_pages", flowers.getTotalPages());
+        response.put("total_elements", flowers.getTotalElements());
+        return response;
     }
 
     private Category getCategory(String name) {
