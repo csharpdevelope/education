@@ -27,6 +27,9 @@ public interface FlowerService {
 
     Flower getById(Long id);
 
-    JsonNode getAllWithPage(int page, int size);
-    JsonNode getAllWithPage(int page, int size, String name, Boolean isDesc);
+    JsonNode getAllWithPage(Integer page, Integer size);
+
+    JsonNode getAllWithPage(Integer page, Integer size, String name, Boolean isDesc);
+
+    JSend getFlowerById(Long id);
 }

@@ -30,7 +30,7 @@ public class CheckOutService {
         Checkout checkout = new Checkout();
         Flower flower = flowerService.getById(checkOutDto.getFlowerId());
         checkout.setFlower(flower);
-        checkout.setCount(checkout.getCount());
+        checkout.setCount(checkOutDto.getCount());
         checkout.setUser(user);
         checkOutRepository.save(checkout);
         return JSend.success();

@@ -171,17 +171,25 @@ public class FlowerServiceImpl implements FlowerService {
 
     @Override
     public Flower getById(Long id) {
-        return flowerRepository.getById(id);
+        Optional<Flower> optional = flowerRepository.findById(id);
+        if (optional.isPresent())
+            return optional.get();
+
+        return null;
     }
 
     @Override
-    public JsonNode getAllWithPage(int page, int size) {
+    public JsonNode getAllWithPage(Integer page, Integer size) {
+        if (page == null)
+            page = 0;
+        if (size == null)
+            size = 10;
         Pageable pageable = PageRequest.of(page, size);
         return getFlowerByPageable(pageable);
     }
 
     @Override
-    public JsonNode getAllWithPage(int page, int size, String name, Boolean isDesc) {
+    public JsonNode getAllWithPage(Integer page, Integer size, String name, Boolean isDesc) {
         Pageable pageable;
         if (isDesc) {
             pageable = PageRequest.of(page, size, Sort.by(name).descending());
@@ -191,9 +199,29 @@ public class FlowerServiceImpl implements FlowerService {
         return getFlowerByPageable(pageable);
     }
 
+    @Override
+    public JSend getFlowerById(Long id) {
+        Flower flower = getById(id);
+        if (flower == null)
+            return JSend.notFound("Not found product");
+        return JSend.success(flower.toFlowerDto());
+    }
+
     public JsonNode getFlowerByPageable(Pageable pageable) {
-        ObjectNode response = objectMapper.createObjectNode();
         Page<Flower> flowers = flowerRepository.findAll(pageable);
+        return getFlowerWithPage(flowers);
+    }
+
+    public JsonNode getFlowerByPageable(Pageable pageable, String name) {
+        String output = name.substring(0, 1).toUpperCase() + name.substring(1);
+        GiftType giftType = giftTypeRepository.findByName(output)
+                .orElseThrow(() -> new NotFoundException("Not found Gift"));
+        Page<Flower> flowers = flowerRepository.findAllByGiftTypesIn(List.of(giftType), pageable);
+        return getFlowerWithPage(flowers);
+    }
+
+    private JsonNode getFlowerWithPage(Page<Flower> flowers) {
+        ObjectNode response = objectMapper.createObjectNode();
         List<FlowerDto> flowerDtos = new ArrayList<>();
         flowers.getContent().forEach(flower -> flowerDtos.add(flower.toFlowerDto()));
         response.putPOJO("list", flowerDtos);

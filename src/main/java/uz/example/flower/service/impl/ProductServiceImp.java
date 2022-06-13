@@ -117,7 +117,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public JSend getAllWithPage(int page, int pageSize) {
+    public JSend getAllWithPage(Integer page, Integer pageSize) {
         ObjectNode response = objectMapper.createObjectNode();
         Pageable pageable = PageRequest.of(page, pageSize);
         User user = securityUtils.getCurrentUser();
@@ -247,15 +247,8 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public JsonNode getProductWithGift(String name, Integer page, Integer size) {
-        int pageP = 0, pageSize = 10;
-        if (page != null) {
-            pageP = page;
-        }
-        if (size != null)
-            pageSize = size;
-
-        Pageable pageable = PageRequest.of(pageP, pageSize);
-        return flowerServiceImp.getFlowerByPageable(pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        return flowerServiceImp.getFlowerByPageable(pageable, name);
     }
 
     @Override

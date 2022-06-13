@@ -30,19 +30,24 @@ public class FlowerController {
     }
 
     @GetMapping("gets")
-    public ResponseEntity<?> getAllFlowersWithSort(@RequestParam(value = "page", required = false) int page,
-                                           @RequestParam(value = "page_size", required = false) int size) {
+    public ResponseEntity<?> getAllFlowersWithSort(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                           @RequestParam(value = "page_size", required = false, defaultValue = "12") Integer size) {
         JsonNode flowers = flowerService.getAllWithPage(page, size);
         return ResponseEntity.ok(flowers);
     }
 
     @GetMapping("gets/sort")
-    public ResponseEntity<?> getAllFlowers(@RequestParam(value = "page", required = false) int page,
-                                           @RequestParam(value = "page_size", required = false) int size,
-                                           @RequestParam(value = "name", required = false) String name,
-                                           @RequestParam(value = "desc", required = false) Boolean isDesc) {
+    public ResponseEntity<?> getAllFlowers(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                           @RequestParam(value = "page_size", required = false, defaultValue = "10") Integer size,
+                                           @RequestParam(value = "name", required = false, defaultValue = "id") String name,
+                                           @RequestParam(value = "desc", required = false, defaultValue = "true") Boolean isDesc) {
         JsonNode flowers = flowerService.getAllWithPage(page, size, name, isDesc);
         return ResponseEntity.ok(flowers);
+    }
+
+    @GetMapping("get/flower/{id}")
+    public ResponseEntity<?> getById(@PathVariable(value = "id") Long id) {
+        return ResponseEntity.ok(flowerService.getFlowerById(id));
     }
 
 //    @PostMapping("add")
@@ -81,8 +86,8 @@ public class FlowerController {
 
     @GetMapping("giftname")
     public ResponseEntity<?> getProductWithGiftName(@RequestParam(value = "gift") String name,
-                                                    @RequestParam(value = "page", required = false) Integer page,
-                                                    @RequestParam(value = "page_size", required = false) Integer size) {
+                                                    @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                                    @RequestParam(value = "page_size", required = false, defaultValue = "10") Integer size) {
         JsonNode response = productService.getProductWithGift(name, page, size);
         return ResponseEntity.ok(response);
     }
@@ -93,8 +98,10 @@ public class FlowerController {
 //        return ResponseEntity.ok(response);
 //    }
 
-    @GetMapping("search")
-    public ResponseEntity<?> getSearch(@RequestParam(value = "search") String text) {
+    @PostMapping("search")
+    public ResponseEntity<?> getSearch(@RequestParam(value = "search") String text,
+                                       @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                       @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         JSend response = productService.searchProduct(text);
         return ResponseEntity.ok(response);
     }

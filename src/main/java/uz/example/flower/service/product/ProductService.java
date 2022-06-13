@@ -17,7 +17,7 @@ public interface ProductService {
 
     JSend getAll();
 
-    JSend getAllWithPage(int page, int pageSize);
+    JSend getAllWithPage(Integer page, Integer pageSize);
 
     JSend getById(Long id);
 

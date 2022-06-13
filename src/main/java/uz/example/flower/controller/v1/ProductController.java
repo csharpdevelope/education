@@ -41,7 +41,8 @@ public class ProductController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<?> getAllProductsForCustomer(@RequestParam(value = "page") int page, @RequestParam(value = "page_size") int pageSize) {
+    public ResponseEntity<?> getAllProductsForCustomer(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                                       @RequestParam(value = "size", required = false, defaultValue = "10") Integer pageSize) {
         JSend response = productService.getAllWithPage(page, pageSize);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
@@ -59,22 +60,22 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 
-    @DeleteMapping("delete{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long id) {
         JSend response = productService.deleteProduct(id);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 
     @PatchMapping("change/quantity")
-    public ResponseEntity<?> changeQuantity(@RequestPart(value = "id") Long id,
-                                            @RequestPart(value = "quantity") Long quantity){
+    public ResponseEntity<?> changeQuantity(@RequestParam(value = "id") Long id,
+                                            @RequestParam(value = "quantity") Long quantity){
         JSend response = productService.editQuantityProduct(id, quantity);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }
 
     @PatchMapping("discount")
-    public ResponseEntity<?> discount(@RequestPart(value = "id") Long id,
-                                            @RequestPart(value = "discount") Long discount){
+    public ResponseEntity<?> discount(@RequestParam(value = "id") Long id,
+                                      @RequestParam(value = "discount") Long discount){
         JSend response = productService.editDiscount(id, discount);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
     }

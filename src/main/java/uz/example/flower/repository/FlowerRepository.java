@@ -37,4 +37,6 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
     List<Flower> searchAllByProducts(String query);
 
     Page<Flower> findAllByUser(User user, Pageable pageable);
+
+    Page<Flower> findAllByGiftTypesIn(List<GiftType> giftTypes, Pageable pageable);
 }

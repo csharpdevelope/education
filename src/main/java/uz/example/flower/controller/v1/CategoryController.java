@@ -20,13 +20,13 @@ public class CategoryController {
         this.productCategoryService = productCategoryService;
     }
 
-    @GetMapping("list")
-    public ResponseEntity<?> getCategories(@RequestParam(value = "ids", required = false) List<Long> ids,
-                                           @RequestParam(value = "page", required = false) int page,
-                                           @RequestParam(value = "page_size", required = false) int pageSize) {
-        JSend response = productCategoryService.getCategory(ids, page, pageSize);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
-    }
+//    @GetMapping("list")
+//    public ResponseEntity<?> getCategories(@RequestParam(value = "ids", required = false) List<Long> ids,
+//                                           @RequestParam(value = "page", required = false) int page,
+//                                           @RequestParam(value = "page_size", required = false) int pageSize) {
+//        JSend response = productCategoryService.getCategory(ids, page, pageSize);
+//        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getCode()));
+//    }
 
     @GetMapping
     public ResponseEntity<?> getCategory() {
@@ -34,9 +34,9 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getCategory(@PathVariable(value = "id") Long id) {
-        JSend response = productCategoryService.getCategory(id);
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<?> getCategory(@PathVariable(value = "id") Long id) {
+//        JSend response = productCategoryService.getCategory(id);
+//        return ResponseEntity.ok(response);
+//    }
 }
