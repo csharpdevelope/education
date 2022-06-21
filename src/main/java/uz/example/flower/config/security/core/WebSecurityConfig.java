@@ -3,7 +3,6 @@ package uz.example.flower.config.security.core;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -58,7 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(SecurityConstant.ACCESS_URL_TOKEN).permitAll()
-                .antMatchers(SecurityConstant.FLOWER_URL).permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger.json").permitAll()
                 .anyRequest().authenticated()
                 .and()

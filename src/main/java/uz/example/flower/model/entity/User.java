@@ -7,7 +7,9 @@ import uz.example.flower.model.enums.Gender;
 import uz.example.flower.payload.response.UserDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,19 +17,11 @@ import java.util.Set;
 @Getter
 @Setter
 public class User extends BaseEntity {
-
-    @Column(unique = true)
-    private String email;
     @Column(unique = true)
     private String username;
     private String password;
-    private Integer emailCode;
     private String firstname;
     private String lastname;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender = Gender.MALE;
-    private String profileImg;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -44,8 +38,11 @@ public class User extends BaseEntity {
         userDto.setUsername(getUsername());
         userDto.setFirstname(getFirstname());
         userDto.setLastname(getLastname());
-        userDto.setEmail(getEmail());
-        userDto.setUrl(getProfileImg());
+        List<String> roles = new ArrayList<>();
+        for (Role role: getRoles()) {
+            roles.add(role.getName().name());
+        }
+        userDto.setRole(roles.get(0));
         return userDto;
     }
 }

@@ -9,10 +9,8 @@ import javax.validation.constraints.NotNull;
 public class UserDto {
     private Long id;
     @NotNull
-    private String email;
-    @NotNull
     private String username;
     private String firstname;
     private String lastname;
-    private String url;
+    private String role;
 }
